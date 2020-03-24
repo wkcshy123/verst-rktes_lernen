@@ -25,6 +25,7 @@ def compute_value_function(policy, gamma):
 
 def extract_policy(value_table, gamma):
     policy = np.zeros(env.observation_space.n)
+    QQ = []
     for state in range(env.observation_space.n):
         Q_table = np.zeros(env.action_space.n)
         for action in range(env.action_space.n):
@@ -32,7 +33,8 @@ def extract_policy(value_table, gamma):
                 trans_prob, next_state, reward_prob, _ = next_sr
                 Q_table[action] += (trans_prob * (reward_prob + gamma * value_table[next_state]))
                 policy[state] = np.argmax(Q_table)
-    return policy
+        QQ.append(Q_table)
+    return policy, QQ
 
 
 def policy_iteration(env, gamma):
@@ -40,16 +42,17 @@ def policy_iteration(env, gamma):
     no_of_iterations = 200000
     for i in range(no_of_iterations):
         new_value_function = compute_value_function(random_policy, gamma)
-        new_policy = extract_policy(new_value_function, gamma)
+        new_policy, QQtable = extract_policy(new_value_function, gamma)
         if np.all(random_policy == new_policy):
             print('Policy-Iteration converged at step {}.'.format(i + 1))
             break
         random_policy = new_policy
-    return new_policy
+    return new_policy, new_value_function, QQtable
 
-a = policy_iteration(env,gammaa)
+
+a, new_v, Q = policy_iteration(env, gammaa)
 
 end = datetime.datetime.now()
-print(end-start)
+print(end - start)
 
 print(a)

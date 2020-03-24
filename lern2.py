@@ -32,9 +32,10 @@ def value_iteration(env, gamma):
             for state in range(env.observation_space.n):
                 policy.append(np.argmax(QQ[state]))
             break
-    return policy
+    return policy, QQ, value_table
 
-policy = value_iteration(env, gamma)
+
+policy, QQ, v = value_iteration(env, gamma)
 
 end = datetime.datetime.now()
 print(end-start)
